@@ -1,0 +1,38 @@
+--- 
+- name: "Playbook to install Java, Tomcat and Jenkins"
+  become: true
+  hosts: dev
+  remote_user: ansible
+  
+  tasks: 
+    - name: "Install Java"
+      yum: 
+        name: java
+        state: latest
+
+    - name: "Tomcat8 Download"
+      get_url: 
+        dest: /opt
+        mode: 493
+        url: "https://archive.apache.org/dist/tomcat/tomcat-8/v8.0.32/bin/apache-tomcat-8.0.32.tar.gz"
+      
+    - name: "Unarchive Tomcat8 tar file"
+      unarchive: 
+        dest: /opt
+        remote_src: true
+        src: apache-tomcat-8.0.32.tar.gz
+
+    - name: "Rename Tomcat8 Directory"
+      command: "mv /opt/apache-tomcat-8.0.32.tar.gz /opt/tomcat8"
+
+    - name: "Download Jenkins into the webapps folder in Tomcat"
+      get_url: 
+        dest: /opt/tomcat8/webapps
+        url: "http://mirrors.jenkins.io/war-stable/latest/jenkins.war"
+        mode: 0755  
+
+    - name: "Start up Tomcat"
+      service: 
+        name: tomcat8
+        pattern: /opt/tomcat8/bin/startup.sh
+        state: started
