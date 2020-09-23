@@ -1,7 +1,7 @@
 --- 
 - name: "Playbook to install Java, Tomcat and Jenkins"
   become: true
-  hosts: 10.0.0.133
+  hosts: 18.212.229.62
   remote_user: ansible
   
   tasks: 
